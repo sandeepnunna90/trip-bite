@@ -68,7 +68,7 @@ with col_logout:
         st.rerun()
 
 # Get or create trip
-if not st.session_state.trip_id:
+if not st.session_state.get("trip_id"):
     try:
         trips_resp = httpx.get(f"{backend_url}/trips/me", headers=auth_headers, timeout=10)
         trips_resp.raise_for_status()

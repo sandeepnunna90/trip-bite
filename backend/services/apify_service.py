@@ -42,7 +42,7 @@ def get_reviews(place_id: str) -> list[str]:
         "language": "en",
     }
 
-    run = client.actor(ACTOR_ID).call(run_input=run_input, timeout_secs=120)
+    run = client.actor(ACTOR_ID).call(run_input=run_input, timeout_secs=150)
 
     reviews = []
     for item in client.dataset(run["defaultDatasetId"]).iterate_items():

@@ -56,7 +56,7 @@ st.subheader("🤖 Top Dishes (AI-Extracted from Reviews)")
 
 with st.spinner("Analyzing reviews with AI... this may take 30-60 seconds the first time."):
     try:
-        d = httpx.get(f"{backend_url}/dishes/{place_id}", timeout=120)
+        d = httpx.get(f"{backend_url}/dishes/{place_id}", timeout=180)
         d.raise_for_status()
         dishes = d.json()
     except httpx.HTTPStatusError as e:
