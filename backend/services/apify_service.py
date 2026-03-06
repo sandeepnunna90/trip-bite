@@ -37,7 +37,7 @@ def get_reviews(place_id: str) -> list[str]:
 
     run_input = {
         "placeIds": [f"https://www.google.com/maps/place/?q=place_id:{place_id}"],
-        "maxReviews": 100,
+        "maxReviews": settings.apify_max_reviews,
         "reviewsSort": "mostRelevant",
         "language": "en",
     }

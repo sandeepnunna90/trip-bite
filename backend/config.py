@@ -13,6 +13,8 @@ class Settings(BaseSettings):
     resend_from_email: str = "hello@tripbite.app"
     backend_url: str = "http://localhost:8000"
 
+    apify_max_reviews: int = 100
+
     use_mock_google: bool = False
     use_mock_apify: bool = False
     use_mock_claude: bool = False
