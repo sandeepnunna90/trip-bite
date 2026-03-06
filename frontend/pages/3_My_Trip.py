@@ -1,9 +1,18 @@
 import streamlit as st
 import httpx
+import extra_streamlit_components as stx
+from datetime import datetime, timedelta, timezone
 
 st.set_page_config(page_title="My Trip — TripBite", page_icon="📋", layout="wide")
 
 backend_url = st.session_state.get("backend_url", "http://localhost:8000")
+
+# ── Cookie-based session restore ─────────────────────────────
+cookie_manager = stx.CookieManager()
+if not st.session_state.get("auth_token"):
+    token = cookie_manager.get("auth_token")
+    if token:
+        st.session_state.auth_token = token
 
 st.title("📋 My Trip")
 
@@ -29,6 +38,8 @@ if not st.session_state.get("auth_token"):
                 data = resp.json()
                 st.session_state.auth_token = data["access_token"]
                 st.session_state.user_id = data["user_id"]
+                expires = datetime.now(timezone.utc) + timedelta(minutes=30)
+                cookie_manager.set("auth_token", data["access_token"], expires_at=expires, key="set_auth")
                 st.rerun()
             except httpx.HTTPStatusError as e:
                 st.error(f"Login failed: {e.response.json().get('detail', e.response.text)}")
@@ -62,6 +73,7 @@ auth_headers = {"Authorization": f"Bearer {st.session_state.auth_token}"}
 col_title, col_logout = st.columns([4, 1])
 with col_logout:
     if st.button("Log Out"):
+        cookie_manager.delete("auth_token", key="del_auth")
         st.session_state.auth_token = None
         st.session_state.user_id = None
         st.session_state.trip_id = None

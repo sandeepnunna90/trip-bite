@@ -22,14 +22,15 @@ def create_share(req: CreateShareRequest, user: dict = Depends(get_current_user)
         raise HTTPException(status_code=403, detail="Trip not found or access denied")
 
     # Check for existing token
-    existing = client.table("share_tokens").select("token").eq("trip_id", req.trip_id).maybe_single().execute()
+    existing = client.table("share_tokens").select("token").eq("trip_id", req.trip_id).execute()
     if existing.data:
-        token = existing.data["token"]
+        token = existing.data[0]["token"]
     else:
         result = client.table("share_tokens").insert({"trip_id": req.trip_id}).execute()
         token = result.data[0]["token"]
 
-    share_url = f"{settings.backend_url.rstrip('/')}/share/{token}"
+    frontend_url = settings.backend_url.replace(":8000", ":8501").rstrip("/")
+    share_url = f"{frontend_url}/Shared_Trip?token={token}"
     return {"token": token, "share_url": share_url}
 
 
